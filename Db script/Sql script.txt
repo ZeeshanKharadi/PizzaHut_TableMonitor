@@ -1,0 +1,23 @@
+USE [RetailChannelDatabase]
+GO
+
+/****** Object:  Table [dbo].[ItemWisePrinterConfiguration]    Script Date: 10/24/2022 3:12:55 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ItemWisePrinterConfiguration](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[PrinterName] [varchar](100) NOT NULL,
+	[PrinterStatus] [bit] NOT NULL,
+	[PoolId] [varchar](50) NOT NULL,
+ CONSTRAINT [PK__ItemWise__3214EC078D3F7353] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+alter database [RetailChannelDatabase] set enable_broker with rollback immediate;

@@ -1,0 +1,49 @@
+blank@123
+
+InvoiceId	int	Unchecked
+InvoiceDate	date	Checked
+CustomerId	int	Checked
+Quantity	decimal(10, 2)	Checked
+Discount	decimal(10, 2)	Checked
+GrandTotle	decimal(10, 2)	Checked
+Net	decimal(10, 2)	Checked
+Cash	decimal(10, 2)	Checked
+Balance	decimal(10, 2)	Checked
+
+public bool PrintPDF(string printer, int copies, bool colored, Stream stream)
+    {
+        try
+        {
+            // Create the printer settings for our printer
+            var printerSettings = new PrinterSettings
+            {
+                PrinterName = printer,
+                Copies = (short)copies,
+            };
+
+            printerSettings.DefaultPageSettings.Color = colored;
+            IEnumerable<PaperSize> paperSizes = printerSettings.PaperSizes.Cast<PaperSize>();
+            PaperSize sizeA4 = paperSizes.First<PaperSize>(size => size.Kind == PaperKind.A4);
+            printerSettings.DefaultPageSettings.PaperSize = sizeA4;
+
+            // Now print the PDF document
+            using (var document = PdfiumViewer.PdfDocument.Load(stream))
+            {
+                using (var printDocument = document.CreatePrintDocument())
+                {
+                    printDocument.PrinterSettings = printerSettings;
+                    printDocument.PrintController = new StandardPrintController();
+                    printDocument.Print();
+                }
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            string message = "Something went wrong while printing!";
+            string title = "Printing Error!";
+            MessageBox.Show(e.ToString(), title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Debug.WriteLine(e.ToString());
+            return false;
+        }
+    }
