@@ -148,6 +148,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\DynamicPosOrder.cs" />
     <Compile Include="Class\InitPrinter.cs" />
     <Compile Include="Class\MiddlewareSALESTRANSACTION.cs" />
     <Compile Include="Class\MiddlewareTransaction.cs" />

@@ -384,7 +384,7 @@ namespace TableMonitor
                     new SolidBrush(Color.Black), 50, Offset);
 
             Offset = Offset + smallinc + 10;
-            graphics.DrawString($"CHEEZIOUS", largefont,
+            graphics.DrawString($"PIZZA HUT", largefont,
                              new SolidBrush(Color.Black), 70, Offset);
 
           
@@ -521,10 +521,10 @@ namespace TableMonitor
             }
 
             Offset = Offset + mediuminc + 100;
-            graphics.DrawString($"CONNECT WITH CHEEZIOUS", totalfont, new SolidBrush(Color.Black), 60, Offset);
+            graphics.DrawString($"CONNECT WITH PIZZA HUT", totalfont, new SolidBrush(Color.Black), 60, Offset);
 
             Offset = Offset + mediuminc;
-            graphics.DrawString($"www.cheezious.com  |  111-44-66-99", totalfont,
+            graphics.DrawString($"www.PIZZAHUT.com  |  111-44-66-99", totalfont,
                               new SolidBrush(Color.Black), 40, Offset);
 
         }

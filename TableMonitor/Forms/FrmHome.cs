@@ -23,7 +23,8 @@ namespace TableMonitor.Forms
     public partial class FrmHome : Form
     {
         //public SqlTableDependency<MiddlewareSALESTRANSACTION> people_table_dependency;
-        public SqlTableDependency<MiddlewareTransaction> people_table_dependency;
+        //public SqlTableDependency<MiddlewareTransaction> people_table_dependency;
+        //public SqlTableDependency<DynamicPosOrders> people_table_dependency;
         public SqlTableDependency<SALESTRANSACTION> people_table_dependency_POS;
 
         public FrmHome()
@@ -75,7 +76,7 @@ namespace TableMonitor.Forms
         private void FrmHome_Load(object sender, EventArgs e)
         {
             //form load event
-            loadTransactionDataFromDbAsync();
+            //loadTransactionDataFromDbAsync();
             loadTransactionDataFromDbPOSAsync();
             start_people_table_dependency();
         }
@@ -114,7 +115,7 @@ namespace TableMonitor.Forms
         {
             try
             {
-                stop_people_table_dependency();
+                //stop_people_table_dependency();
             }
             catch (Exception ex) { log_file(ex.ToString()); }
         }
@@ -126,16 +127,16 @@ namespace TableMonitor.Forms
             {
                 people_table_dependency_POS =  new SqlTableDependency<SALESTRANSACTION>(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString, "SALESTRANSACTION", "crt");
                 //people_table_dependency = new SqlTableDependency<MiddlewareSALESTRANSACTION>(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString, "RetailTransactionSalesTrans", "dbo");
-                people_table_dependency = new SqlTableDependency<MiddlewareTransaction>(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString, "RetailTransaction", "dbo");
+                //people_table_dependency = new SqlTableDependency<DynamicPosOrders>(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString, "DynamicPosOrders", "dbo");
 
                 //if any activity is performed in sql table then this dependency will tregger and check the entity type if entity type inserted or change then proceed accordingly
-                people_table_dependency.OnChanged += People_table_dependency_OnChanged;
+                //people_table_dependency.OnChanged += People_table_dependency_OnChanged;
                 //people_table_dependency.OnChanged += People_table_dependency_OnChanged;
                 people_table_dependency_POS.OnChanged += People_table_dependency_POS_OnChanged;
                 //if any error ouccerd during dependency on process it will throwe an exception
-                people_table_dependency.OnError += people_table_dependency_OnError;
+                //people_table_dependency.OnError += people_table_dependency_OnError;
                 //Dependency start function
-                people_table_dependency.Start();
+                //people_table_dependency.Start();
                 people_table_dependency_POS.Start();
                 return true;
             }
@@ -152,7 +153,7 @@ namespace TableMonitor.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         [Obsolete]
-        private void People_table_dependency_OnChanged(object sender, RecordChangedEventArgs<MiddlewareTransaction> e)
+        private void People_table_dependency_OnChanged(object sender, RecordChangedEventArgs<DynamicPosOrders> e)
         //private void People_table_dependency_OnChanged(object sender, RecordChangedEventArgs<MiddlewareSALESTRANSACTION> e)
         {
             try
@@ -170,7 +171,7 @@ namespace TableMonitor.Forms
                             //if (changedEntity.ISSUSPENDED == false )
                             //{
                             //calling log function to store event log. and display.
-                            log_file($"Suspended Transaction:\t Transaction ID: {changedEntity.TransactionId}\t Created ON:{changedEntity.CreatedOn} \t");
+                            log_file($"Suspended Transaction:\t Transaction ID: {changedEntity.ThirdPartyOrderId}\t Created ON:{changedEntity.ModifiedDateTime} \t");
                             //inialize database connection.
                             using (var sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString))
                             {
@@ -178,7 +179,7 @@ namespace TableMonitor.Forms
 
                                 var transactionDataObject = new TransactionData();
                                 //Calling Stored Procedure and pass connection in sql command.
-                                using (var cmd = new SqlCommand(@"sp_getProductDetailsCustom", sqlConnection))
+                                using (var cmd = new SqlCommand(@"getProductDetailsCustom", sqlConnection))
                                 {
                                     //cmd.CommandText = @"select a.ITEMID,erpt.[NAME] AS Description, erpt.PRODUCT,PRODPOOLID , rtt.CREATEDDATETIME,rtt.STAFF,rtt.TRANSACTIONID,rtt.RECEIPTID , a.QTY,a.Comment FROM
                                     //                    [crt].SALESTRANSACTION st
@@ -194,7 +195,7 @@ namespace TableMonitor.Forms
                                     //Specified how a command string is intpreted
                                     cmd.CommandType = CommandType.StoredProcedure;
                                     //Passing Parameter in stored procedure
-                                    cmd.Parameters.AddWithValue("@TransactionID", changedEntity.TransactionId);
+                                    cmd.Parameters.AddWithValue("@thirdpartyorderid", changedEntity.ThirdPartyOrderId);
                                     // Commed Execution
                                     var drCmd = cmd.ExecuteReader();
                                     transactionDataObject = new TransactionData();
@@ -205,11 +206,11 @@ namespace TableMonitor.Forms
                                         {
                                             transactionDataObject.CREATEDDATETIME = drCmd.IsDBNull(4) ? "" : drCmd.GetDateTime(4).ToString();
                                             transactionDataObject.ThirdPartyOrderId = drCmd.IsDBNull(12) ? "" : drCmd.GetString(12).ToString();
-                                            transactionDataObject.TransactionID = drCmd.IsDBNull(6) ? "" : drCmd.GetString(6).ToString();
+                                            //transactionDataObject.TransactionID = drCmd.IsDBNull(6) ? "" : drCmd.GetString(6).ToString();
                                             transactionDataObject.ReceiptID = drCmd.IsDBNull(7) ? "" : drCmd.GetString(7).ToString();
-                                            transactionDataObject.TableNumber = drCmd.IsDBNull(13) ? "" : drCmd.GetString(13).ToString();
-                                            transactionDataObject.Server = drCmd.IsDBNull(5) ? "" : drCmd.GetString(5).ToString();
-                                            transactionDataObject.Floor = drCmd.IsDBNull(10) ? "" : drCmd.GetString(10).ToString();
+                                            //transactionDataObject.TableNumber = drCmd.IsDBNull(13) ? "" : drCmd.GetString(13).ToString();
+                                            //transactionDataObject.Server = drCmd.IsDBNull(5) ? "" : drCmd.GetString(5).ToString();
+                                            //transactionDataObject.Floor = drCmd.IsDBNull(10) ? "" : drCmd.GetString(10).ToString();
                                             transactionDataObject.StoreId = GeStoreNameFromDB(sqlConnection, transactionDataObject, 3); //drCmd.GetString(11).ToString();
                                             transactionDataObject.StoreName = GeStoreNameFromDB(sqlConnection, transactionDataObject, 1);
                                             transactionDataObject.TaxReg = GeStoreNameFromDB(sqlConnection, transactionDataObject, 2);
@@ -221,7 +222,7 @@ namespace TableMonitor.Forms
                                             transactionDataObject.PaymentAmount = Math.Round(Math.Abs(drCmd.GetDecimal(14)), 2);
                                             transactionDataObject.FBRInvoiceNo = GetFBRInvoiceNo(sqlConnection, transactionDataObject);
                                             transactionDataObject.QrCode = GenerateQRCode(transactionDataObject);
-                                            transactionDataObject.IsFinalize = drCmd.IsDBNull(11) ? false : drCmd.GetBoolean(11);
+                                            //transactionDataObject.IsFinalize = drCmd.IsDBNull(11) ? false : drCmd.GetBoolean(11);
                                             transactionDataObject.CHANNEL = GeChannelForServerAppFromDB(sqlConnection, transactionDataObject);
 
                                             transactionDataObject.SalesLines.Add(new SalesLine
@@ -300,140 +301,140 @@ namespace TableMonitor.Forms
                         }
                         break;
 
-                    case ChangeType.Insert:
-                        {
-                            //if (changedEntity.ISSUSPENDED == false )
-                            //{
-                            //calling log function to store event log. and display.
-                            log_file($"Suspended Transaction:\t Transaction ID: {changedEntity.TransactionId}\t Created ON:{changedEntity.CreatedOn} \t");
-                            //inialize database connection.
-                            using (var sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString))
-                            {
-                                sqlConnection.Open();
+                    //case ChangeType.Insert:
+                    //    {
+                    //        //if (changedEntity.ISSUSPENDED == false )
+                    //        //{
+                    //        //calling log function to store event log. and display.
+                    //        log_file($"Suspended Transaction:\t Transaction ID: {changedEntity.TransactionId}\t Created ON:{changedEntity.CreatedOn} \t");
+                    //        //inialize database connection.
+                    //        using (var sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString))
+                    //        {
+                    //            sqlConnection.Open();
 
-                                var transactionDataObject = new TransactionData();
-                                //Calling Stored Procedure and pass connection in sql command.
-                                using (var cmd = new SqlCommand(@"sp_getProductDetailsCustom", sqlConnection))
-                                {
-                                    //cmd.CommandText = @"select a.ITEMID,erpt.[NAME] AS Description, erpt.PRODUCT,PRODPOOLID , rtt.CREATEDDATETIME,rtt.STAFF,rtt.TRANSACTIONID,rtt.RECEIPTID , a.QTY,a.Comment FROM
-                                    //                    [crt].SALESTRANSACTION st
-                                    //                    -- Several RTT records will be retrieved for the same ST record, so this is for searching only, not to be used on the UI.
-                                    //                    LEFT JOIN [ax].RETAILTRANSACTIONTABLE AS rtt ON st.TRANSACTIONID = rtt.SUSPENDEDTRANSACTIONID
-                                    //                    inner join ax.RETAILTRANSACTIONSALESTRANS  a on a.TRANSACTIONID = rtt.TRANSACTIONID
-                                    //                        INNER JOIN [ax].INVENTTABLE it WITH (NOLOCK) ON it.ITEMID = a.ITEMID AND it.DATAAREAID = a.DATAAREAID
-                                    //                        INNER JOIN [ax].ECORESPRODUCTTRANSLATION erpt ON erpt.PRODUCT = it.PRODUCT AND erpt.LANGUAGEID = 'en-us'
-                                    //                        inner join [crt].[SUSPENDEDTRANSACTION] sut on sut.RECEIPTID = a.RECEIPTID
-                                    //                        WHERE st.[DELETEDDATETIME] IS NULL and st.TRANSACTIONID = '" + changedEntity.TRANSACTIONID + "' and rtt.ENTRYSTATUS <> 1 AND a.TRANSACTIONSTATUS <> 1 ";
-
-
-                                    //Specified how a command string is intpreted
-                                    cmd.CommandType = CommandType.StoredProcedure;
-                                    //Passing Parameter in stored procedure
-                                    cmd.Parameters.AddWithValue("@TransactionID", changedEntity.TransactionId);
-                                    // Commed Execution
-                                    var drCmd = cmd.ExecuteReader();
-                                    transactionDataObject = new TransactionData();
-                                    string Floor = "";
-                                    while (drCmd.Read())
-                                    {
-                                        if (drCmd.HasRows)
-                                        {
-                                            transactionDataObject.CREATEDDATETIME = drCmd.IsDBNull(4) ? "" : drCmd.GetDateTime(4).ToString();
-                                            transactionDataObject.ThirdPartyOrderId = drCmd.IsDBNull(12) ? "" : drCmd.GetString(12).ToString();
-                                            transactionDataObject.TransactionID = drCmd.IsDBNull(6) ? "" : drCmd.GetString(6).ToString();
-                                            transactionDataObject.ReceiptID = drCmd.IsDBNull(7) ? "" : drCmd.GetString(7).ToString();
-                                            transactionDataObject.TableNumber = drCmd.IsDBNull(13) ? "" : drCmd.GetString(13).ToString();
-                                            transactionDataObject.Server = drCmd.IsDBNull(5) ? "" : drCmd.GetString(5).ToString();
-                                            transactionDataObject.Floor = drCmd.IsDBNull(10) ? "" : drCmd.GetString(10).ToString();
-                                            transactionDataObject.StoreId = GeStoreNameFromDB(sqlConnection, transactionDataObject, 3); //drCmd.GetString(11).ToString();
-                                            transactionDataObject.StoreName = GeStoreNameFromDB(sqlConnection, transactionDataObject, 1);
-                                            transactionDataObject.TaxReg = GeStoreNameFromDB(sqlConnection, transactionDataObject, 2);
-                                            transactionDataObject.DiscountAmount = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 1);
-                                            transactionDataObject.AmountExcl = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 2);
-                                            transactionDataObject.TaxAmount = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 3);
-                                            transactionDataObject.AmountIncl = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 4);
-                                            transactionDataObject.SurveyUrl = GetSurveyURL(sqlConnection, transactionDataObject);
-                                            transactionDataObject.PaymentAmount = Math.Round(Math.Abs(drCmd.GetDecimal(14)), 2);
-                                            transactionDataObject.FBRInvoiceNo = GetFBRInvoiceNo(sqlConnection, transactionDataObject);
-                                            transactionDataObject.QrCode = GenerateQRCode(transactionDataObject);
-                                            transactionDataObject.IsFinalize = drCmd.IsDBNull(11) ? false : drCmd.GetBoolean(11);
-                                            transactionDataObject.CHANNEL = GeChannelForServerAppFromDB(sqlConnection, transactionDataObject);
-
-                                            transactionDataObject.SalesLines.Add(new SalesLine
-                                            {
-                                                Description = drCmd.IsDBNull(1) ? "" : drCmd.GetString(1),
-                                                PoolId = drCmd.IsDBNull(3) ? "" : drCmd.GetString(3).ToString(),
-                                                QTY = drCmd.IsDBNull(8) ? 0 : Convert.ToInt32(drCmd.GetDecimal(8)),
-                                                Comment = drCmd.IsDBNull(9) ? "" : drCmd.GetString(9),
-                                                ItemInfoCode = "",// GetSubInfoCodesForSaleLine(changedEntity.TRANSACTIONID, sqlConnection)
-                                                Unitprice = Math.Round(Math.Abs(drCmd.GetDecimal(15)), 2),
-                                                Taxprice = Math.Round(Math.Abs(drCmd.GetDecimal(15)), 2),
-                                                Totalprice = Math.Round(Math.Abs(drCmd.GetDecimal(16)), 2)
-
-                                            });
-                                            Floor = drCmd.GetString(10);
-                                        }
-                                    }
-
-                                        //Calling Headprinter To print full receipt.
-                                        using (var sqlCommand = sqlConnection.CreateCommand())
-                                        {
-                                            sqlCommand.CommandText = "SELECT PrinterName, floor FROM ItemWisePrinterConfiguration WHERE PoolId = @PoolId";
-                                            sqlCommand.Parameters.AddWithValue("@PoolId", "Master");
-                                            var dr = sqlCommand.ExecuteReader();
-
-                                            while (dr.Read())
-                                            {
-                                                if (dr.HasRows && transactionDataObject.ReceiptID != null)
-                                                {
-                                                    var printername = dr.GetString(0);
-                                                    var printerfloor = dr.GetString(1);
-                                                    // print the receipt
-                                                    PrinterUtility.Print(printername, "Master", transactionDataObject);
-                                                }
-                                            }
-                                        }
-                                        sqlConnection.Close();
-                                        // distint pools from sale line and store in array
-                                        var distinctPools = transactionDataObject.SalesLines.Select(x => x.PoolId).Distinct();
-                                        foreach (var pool in distinctPools)
-                                        {
-                                            string itemfloor = null;
-                                            var sortedLines = new List<SalesLine>();
-                                            foreach (var line in transactionDataObject.SalesLines)
-                                            {
-                                                if (line.PoolId == pool)
-                                                {
-                                                    sortedLines.Add(line);
-                                                }
-                                            }
-                                            var data = new TransactionData
-                                            {
-                                                CREATEDDATETIME = transactionDataObject.CREATEDDATETIME,
-                                                TransactionID = transactionDataObject.TransactionID,
-                                                ReceiptID = transactionDataObject.ReceiptID,
-                                                SalesLines = sortedLines,
-                                                StaffId = transactionDataObject.StaffId,
-                                                SUSPENDEDTRANSACTIONID = transactionDataObject.SUSPENDEDTRANSACTIONID,
-                                                CHANNEL = transactionDataObject.CHANNEL
-                                            };
-                                            if (pool == "04")
-                                            {
-                                                itemfloor = Floor;
-                                            }
-                                            // send only data which belong to pool
-                                            PrinterConfiguration(pool, transactionDataObject, itemfloor);
-                                        }
-
-                                    //}
-                                }
-                                //}
-                            }
-                            // is_Suspended False
+                    //            var transactionDataObject = new TransactionData();
+                    //            //Calling Stored Procedure and pass connection in sql command.
+                    //            using (var cmd = new SqlCommand(@"sp_getProductDetailsCustom", sqlConnection))
+                    //            {
+                    //                //cmd.CommandText = @"select a.ITEMID,erpt.[NAME] AS Description, erpt.PRODUCT,PRODPOOLID , rtt.CREATEDDATETIME,rtt.STAFF,rtt.TRANSACTIONID,rtt.RECEIPTID , a.QTY,a.Comment FROM
+                    //                //                    [crt].SALESTRANSACTION st
+                    //                //                    -- Several RTT records will be retrieved for the same ST record, so this is for searching only, not to be used on the UI.
+                    //                //                    LEFT JOIN [ax].RETAILTRANSACTIONTABLE AS rtt ON st.TRANSACTIONID = rtt.SUSPENDEDTRANSACTIONID
+                    //                //                    inner join ax.RETAILTRANSACTIONSALESTRANS  a on a.TRANSACTIONID = rtt.TRANSACTIONID
+                    //                //                        INNER JOIN [ax].INVENTTABLE it WITH (NOLOCK) ON it.ITEMID = a.ITEMID AND it.DATAAREAID = a.DATAAREAID
+                    //                //                        INNER JOIN [ax].ECORESPRODUCTTRANSLATION erpt ON erpt.PRODUCT = it.PRODUCT AND erpt.LANGUAGEID = 'en-us'
+                    //                //                        inner join [crt].[SUSPENDEDTRANSACTION] sut on sut.RECEIPTID = a.RECEIPTID
+                    //                //                        WHERE st.[DELETEDDATETIME] IS NULL and st.TRANSACTIONID = '" + changedEntity.TRANSACTIONID + "' and rtt.ENTRYSTATUS <> 1 AND a.TRANSACTIONSTATUS <> 1 ";
 
 
-                        }
-                        break;
+                    //                //Specified how a command string is intpreted
+                    //                cmd.CommandType = CommandType.StoredProcedure;
+                    //                //Passing Parameter in stored procedure
+                    //                cmd.Parameters.AddWithValue("@TransactionID", changedEntity.TransactionId);
+                    //                // Commed Execution
+                    //                var drCmd = cmd.ExecuteReader();
+                    //                transactionDataObject = new TransactionData();
+                    //                string Floor = "";
+                    //                while (drCmd.Read())
+                    //                {
+                    //                    if (drCmd.HasRows)
+                    //                    {
+                    //                        transactionDataObject.CREATEDDATETIME = drCmd.IsDBNull(4) ? "" : drCmd.GetDateTime(4).ToString();
+                    //                        transactionDataObject.ThirdPartyOrderId = drCmd.IsDBNull(12) ? "" : drCmd.GetString(12).ToString();
+                    //                        transactionDataObject.TransactionID = drCmd.IsDBNull(6) ? "" : drCmd.GetString(6).ToString();
+                    //                        transactionDataObject.ReceiptID = drCmd.IsDBNull(7) ? "" : drCmd.GetString(7).ToString();
+                    //                        transactionDataObject.TableNumber = drCmd.IsDBNull(13) ? "" : drCmd.GetString(13).ToString();
+                    //                        transactionDataObject.Server = drCmd.IsDBNull(5) ? "" : drCmd.GetString(5).ToString();
+                    //                        transactionDataObject.Floor = drCmd.IsDBNull(10) ? "" : drCmd.GetString(10).ToString();
+                    //                        transactionDataObject.StoreId = GeStoreNameFromDB(sqlConnection, transactionDataObject, 3); //drCmd.GetString(11).ToString();
+                    //                        transactionDataObject.StoreName = GeStoreNameFromDB(sqlConnection, transactionDataObject, 1);
+                    //                        transactionDataObject.TaxReg = GeStoreNameFromDB(sqlConnection, transactionDataObject, 2);
+                    //                        transactionDataObject.DiscountAmount = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 1);
+                    //                        transactionDataObject.AmountExcl = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 2);
+                    //                        transactionDataObject.TaxAmount = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 3);
+                    //                        transactionDataObject.AmountIncl = GeTotalAmountsFromDB(sqlConnection, transactionDataObject, 4);
+                    //                        transactionDataObject.SurveyUrl = GetSurveyURL(sqlConnection, transactionDataObject);
+                    //                        transactionDataObject.PaymentAmount = Math.Round(Math.Abs(drCmd.GetDecimal(14)), 2);
+                    //                        transactionDataObject.FBRInvoiceNo = GetFBRInvoiceNo(sqlConnection, transactionDataObject);
+                    //                        transactionDataObject.QrCode = GenerateQRCode(transactionDataObject);
+                    //                        transactionDataObject.IsFinalize = drCmd.IsDBNull(11) ? false : drCmd.GetBoolean(11);
+                    //                        transactionDataObject.CHANNEL = GeChannelForServerAppFromDB(sqlConnection, transactionDataObject);
+
+                    //                        transactionDataObject.SalesLines.Add(new SalesLine
+                    //                        {
+                    //                            Description = drCmd.IsDBNull(1) ? "" : drCmd.GetString(1),
+                    //                            PoolId = drCmd.IsDBNull(3) ? "" : drCmd.GetString(3).ToString(),
+                    //                            QTY = drCmd.IsDBNull(8) ? 0 : Convert.ToInt32(drCmd.GetDecimal(8)),
+                    //                            Comment = drCmd.IsDBNull(9) ? "" : drCmd.GetString(9),
+                    //                            ItemInfoCode = "",// GetSubInfoCodesForSaleLine(changedEntity.TRANSACTIONID, sqlConnection)
+                    //                            Unitprice = Math.Round(Math.Abs(drCmd.GetDecimal(15)), 2),
+                    //                            Taxprice = Math.Round(Math.Abs(drCmd.GetDecimal(15)), 2),
+                    //                            Totalprice = Math.Round(Math.Abs(drCmd.GetDecimal(16)), 2)
+
+                    //                        });
+                    //                        Floor = drCmd.GetString(10);
+                    //                    }
+                    //                }
+
+                    //                    //Calling Headprinter To print full receipt.
+                    //                    using (var sqlCommand = sqlConnection.CreateCommand())
+                    //                    {
+                    //                        sqlCommand.CommandText = "SELECT PrinterName, floor FROM ItemWisePrinterConfiguration WHERE PoolId = @PoolId";
+                    //                        sqlCommand.Parameters.AddWithValue("@PoolId", "Master");
+                    //                        var dr = sqlCommand.ExecuteReader();
+
+                    //                        while (dr.Read())
+                    //                        {
+                    //                            if (dr.HasRows && transactionDataObject.ReceiptID != null)
+                    //                            {
+                    //                                var printername = dr.GetString(0);
+                    //                                var printerfloor = dr.GetString(1);
+                    //                                // print the receipt
+                    //                                PrinterUtility.Print(printername, "Master", transactionDataObject);
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                    sqlConnection.Close();
+                    //                    // distint pools from sale line and store in array
+                    //                    var distinctPools = transactionDataObject.SalesLines.Select(x => x.PoolId).Distinct();
+                    //                    foreach (var pool in distinctPools)
+                    //                    {
+                    //                        string itemfloor = null;
+                    //                        var sortedLines = new List<SalesLine>();
+                    //                        foreach (var line in transactionDataObject.SalesLines)
+                    //                        {
+                    //                            if (line.PoolId == pool)
+                    //                            {
+                    //                                sortedLines.Add(line);
+                    //                            }
+                    //                        }
+                    //                        var data = new TransactionData
+                    //                        {
+                    //                            CREATEDDATETIME = transactionDataObject.CREATEDDATETIME,
+                    //                            TransactionID = transactionDataObject.TransactionID,
+                    //                            ReceiptID = transactionDataObject.ReceiptID,
+                    //                            SalesLines = sortedLines,
+                    //                            StaffId = transactionDataObject.StaffId,
+                    //                            SUSPENDEDTRANSACTIONID = transactionDataObject.SUSPENDEDTRANSACTIONID,
+                    //                            CHANNEL = transactionDataObject.CHANNEL
+                    //                        };
+                    //                        if (pool == "04")
+                    //                        {
+                    //                            itemfloor = Floor;
+                    //                        }
+                    //                        // send only data which belong to pool
+                    //                        PrinterConfiguration(pool, transactionDataObject, itemfloor);
+                    //                    }
+
+                    //                //}
+                    //            }
+                    //            //}
+                    //        }
+                    //        // is_Suspended False
+
+
+                    //    }
+                    //    break;
 
 
                         //case ChangeType.Delete:
@@ -570,8 +571,8 @@ namespace TableMonitor.Forms
 
                             if (changedEntity.COMMENT != null)
                             {
-                                if (changedEntity.COMMENT.Contains("ServerApp") == true)
-                                {
+                                //if (changedEntity.COMMENT.Contains("ServerApp") == true)
+                                //{
 
                                     log_file($"ServerApp Order Des:\t Transaction ID: {changedEntity.COMMENT}\t Created ON:{changedEntity.CREATEDDATETIME} \t TransactionID : {changedEntity.TRANSACTIONID} ");
                                     //inialize database connection.
@@ -586,18 +587,6 @@ namespace TableMonitor.Forms
                                         //Calling Stored Procedure and pass connection in sql command.
                                         using (var cmd = new SqlCommand(@"sp_getProductDetailsfalse", sqlConnection))
                                         {
-                                            //cmd.CommandText = @"select a.ITEMID,erpt.[NAME] AS Description, erpt.PRODUCT,PRODPOOLID , rtt.CREATEDDATETIME,rtt.STAFF,rtt.TRANSACTIONID,rtt.RECEIPTID , a.QTY,a.Comment FROM
-                                            //                    [crt].SALESTRANSACTION st
-                                            //                    -- Several RTT records will be retrieved for the same ST record, so this is for searching only, not to be used on the UI.
-                                            //                    LEFT JOIN [ax].RETAILTRANSACTIONTABLE AS rtt ON st.TRANSACTIONID = rtt.SUSPENDEDTRANSACTIONID
-                                            //                    inner join ax.RETAILTRANSACTIONSALESTRANS  a on a.TRANSACTIONID = rtt.TRANSACTIONID
-                                            //                        INNER JOIN [ax].INVENTTABLE it WITH (NOLOCK) ON it.ITEMID = a.ITEMID AND it.DATAAREAID = a.DATAAREAID
-                                            //                        INNER JOIN [ax].ECORESPRODUCTTRANSLATION erpt ON erpt.PRODUCT = it.PRODUCT AND erpt.LANGUAGEID = 'en-us'
-                                            //                        inner join [crt].[SUSPENDEDTRANSACTION] sut on sut.RECEIPTID = a.RECEIPTID
-                                            //                        WHERE st.[DELETEDDATETIME] IS NULL and st.TRANSACTIONID = '" + changedEntity.TRANSACTIONID + "' and rtt.ENTRYSTATUS <> 1 AND a.TRANSACTIONSTATUS <> 1 ";
-
-
-                                            //Specified how a command string is intpreted
                                             cmd.CommandType = CommandType.StoredProcedure;
                                             //Passing Parameter in stored procedure
                                             cmd.Parameters.AddWithValue("@TransactionID", changedEntity.TRANSACTIONID);
@@ -613,7 +602,7 @@ namespace TableMonitor.Forms
                                                     transactionDataObject.StaffId = drCmd.GetString(5).ToString();
                                                     transactionDataObject.TransactionID = drCmd.GetString(6).ToString();
                                                     transactionDataObject.ReceiptID = drCmd.GetString(7).ToString();
-                                                    transactionDataObject.TableNumber = drCmd.GetString(14).ToString();//GetTableNoFromDB(drCmd.GetString(6).ToString());
+                                                   // transactionDataObject.TableNumber = drCmd.GetString(14).ToString();//GetTableNoFromDB(drCmd.GetString(6).ToString());
                                                     transactionDataObject.EmployeName = GetEmployeeName(sqlConnection, transactionDataObject);
                                                     transactionDataObject.SUSPENDEDTRANSACTIONID = drCmd.GetString(10).ToString();
                                                     transactionDataObject.CHANNEL = GeChannelFromDB(sqlConnection, transactionDataObject);
@@ -689,7 +678,7 @@ namespace TableMonitor.Forms
 
                                         }
 
-                                    }
+                                    //}
                                 }
                                 log_file($"New Transaction:\t Transaction ID: {changedEntity.TRANSACTIONID}\t Created ON:{changedEntity.CREATEDDATETIME} \t ISSUSPENDED : {changedEntity.ISSUSPENDED} ");
                             }
@@ -827,118 +816,7 @@ namespace TableMonitor.Forms
                         break;
 
 
-                        //case ChangeType.Delete:
-                        //    {
-                        //        //if (changedEntity.ISSUSPENDED == false)
-                        //        //{
-                        //            //calling log function to store event log. and display.
-                        //            log_file($"Suspended Transaction:\t Transaction ID: {changedEntity.TRANSACTIONID}\t Created ON:{changedEntity.CREATEDDATETIME} \t ISSUSPENDED : {changedEntity.ISSUSPENDED} ");
-                        //            //inialize database connection.
-                        //            using (var sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString))
-                        //            {
-                        //                sqlConnection.Open();
-
-                        //                var transactionDataObject = new TransactionData();
-                        //                //Calling Stored Procedure and pass connection in sql command.
-                        //                using (var cmd = new SqlCommand(@"sp_getProductDetailsfalse", sqlConnection))
-                        //                {
-                        //                    //cmd.CommandText = @"select a.ITEMID,erpt.[NAME] AS Description, erpt.PRODUCT,PRODPOOLID , rtt.CREATEDDATETIME,rtt.STAFF,rtt.TRANSACTIONID,rtt.RECEIPTID , a.QTY,a.Comment FROM
-                        //                    //                    [crt].SALESTRANSACTION st
-                        //                    //                    -- Several RTT records will be retrieved for the same ST record, so this is for searching only, not to be used on the UI.
-                        //                    //                    LEFT JOIN [ax].RETAILTRANSACTIONTABLE AS rtt ON st.TRANSACTIONID = rtt.SUSPENDEDTRANSACTIONID
-                        //                    //                    inner join ax.RETAILTRANSACTIONSALESTRANS  a on a.TRANSACTIONID = rtt.TRANSACTIONID
-                        //                    //                        INNER JOIN [ax].INVENTTABLE it WITH (NOLOCK) ON it.ITEMID = a.ITEMID AND it.DATAAREAID = a.DATAAREAID
-                        //                    //                        INNER JOIN [ax].ECORESPRODUCTTRANSLATION erpt ON erpt.PRODUCT = it.PRODUCT AND erpt.LANGUAGEID = 'en-us'
-                        //                    //                        inner join [crt].[SUSPENDEDTRANSACTION] sut on sut.RECEIPTID = a.RECEIPTID
-                        //                    //                        WHERE st.[DELETEDDATETIME] IS NULL and st.TRANSACTIONID = '" + changedEntity.TRANSACTIONID + "' and rtt.ENTRYSTATUS <> 1 AND a.TRANSACTIONSTATUS <> 1 ";
-
-
-                        //                    //Specified how a command string is intpreted
-                        //                    cmd.CommandType = CommandType.StoredProcedure;
-                        //                    //Passing Parameter in stored procedure
-                        //                    cmd.Parameters.AddWithValue("@TransactionID", changedEntity.TRANSACTIONID);
-                        //                    // Commed Execution
-                        //                    var drCmd = cmd.ExecuteReader();
-                        //                    transactionDataObject = new TransactionData();
-
-                        //                    while (drCmd.Read())
-                        //                    {
-                        //                        if (drCmd.HasRows)
-                        //                        {
-                        //                            transactionDataObject.CREATEDDATETIME = drCmd.GetDateTime(4).ToString();
-                        //                            transactionDataObject.StaffId = drCmd.GetString(5).ToString();
-                        //                            transactionDataObject.TransactionID = drCmd.GetString(6).ToString();
-                        //                            transactionDataObject.ReceiptID = drCmd.GetString(7).ToString();
-                        //                            transactionDataObject.TableNumber = GetTableNoFromDB(changedEntity.TRANSACTIONID);
-                        //                            transactionDataObject.EmployeName = GetEmployeeName(sqlConnection, transactionDataObject);
-                        //                            transactionDataObject.SUSPENDEDTRANSACTIONID = drCmd.GetString(10).ToString();
-                        //                            transactionDataObject.SalesLines.Add(new SalesLine
-                        //                            {
-                        //                                Description = drCmd.GetString(1),
-                        //                                ProductId = drCmd.GetInt64(2).ToString(),
-                        //                                PoolId = drCmd.GetString(3).ToString(),
-                        //                                QTY = Convert.ToInt32(Math.Abs(drCmd.GetDecimal(8))),
-                        //                                Comment = drCmd.GetString(9),
-                        //                                ItemInfoCode = GetSubInfoCodesForSaleLine(changedEntity.TRANSACTIONID, sqlConnection)
-                        //                            });
-                        //                        }
-                        //                    }
-
-
-                        //                    //Calling Headprinter To print full receipt.
-                        //                    using (var sqlCommand = sqlConnection.CreateCommand())
-                        //                    {
-                        //                        sqlCommand.CommandText = $"select PrinterName from ItemWisePrinterConfiguration where PoolId ='Master'";
-                        //                        var dr = sqlCommand.ExecuteReader();
-
-                        //                        while (dr.Read())
-                        //                        {
-                        //                            if (dr.HasRows)
-                        //                            {
-                        //                                var printername = dr.GetString(0);
-                        //                                if (transactionDataObject.SalesLines.Count > 0)
-                        //                                {
-                        //                                    // print the receipt
-                        //                                    PrinterUtility.Print(printername, "Master", transactionDataObject);
-                        //                                }
-
-                        //                            }
-                        //                        }
-                        //                    }
-                        //                    sqlConnection.Close();
-                        //                    // distint pools from sale line and store in array
-                        //                    var distinctPools = transactionDataObject.SalesLines.Select(x => x.PoolId).Distinct();
-                        //                    foreach (var pool in distinctPools)
-                        //                    {
-                        //                        var sortedLines = new List<SalesLine>();
-                        //                        foreach (var line in transactionDataObject.SalesLines)
-                        //                        {
-                        //                            if (line.PoolId == pool)
-                        //                            {
-                        //                                sortedLines.Add(line);
-                        //                            }
-                        //                        }
-                        //                        var data = new TransactionData
-                        //                        {
-                        //                            CREATEDDATETIME = transactionDataObject.CREATEDDATETIME,
-                        //                            TransactionID = transactionDataObject.TransactionID,
-                        //                            ReceiptID = transactionDataObject.ReceiptID,
-                        //                            SalesLines = sortedLines,
-                        //                            StaffId = transactionDataObject.StaffId,
-                        //                            SUSPENDEDTRANSACTIONID = transactionDataObject.SUSPENDEDTRANSACTIONID,
-                        //                        };
-                        //                        if (data.SalesLines.Count > 0)
-                        //                        {
-                        //                            // send only data which belong to pool
-                        //                            PrinterConfiguration(pool, transactionDataObject);
-                        //                        }
-
-                        //                    }
-                        //                }
-                        //            }
-                        //      //  }
-                        //    }
-                        //    break;
+                        
                 };
             }
             catch (Exception ex)
@@ -1160,21 +1038,21 @@ namespace TableMonitor.Forms
         /// Purpose of this function is to stop dependency when application is close 
         /// </summary>
         /// <returns></returns>
-        private bool stop_people_table_dependency()
-        {
-            try
-            {
-                if (people_table_dependency != null)
-                {
-                    people_table_dependency.Stop();
+        //private bool stop_people_table_dependency()
+        //{
+        //    try
+        //    {
+        //        if (people_table_dependency != null)
+        //        {
+        //            people_table_dependency.Stop();
 
-                    return true;
-                }
-            }
-            catch (Exception ex) { log_file(ex.ToString()); }
+        //            return true;
+        //        }
+        //    }
+        //    catch (Exception ex) { log_file(ex.ToString()); }
 
-            return false;
-        }
+        //    return false;
+        //}
         /// <summary>
         /// Any type of error which trigger during dependecy will log.
         /// </summary>
@@ -1206,7 +1084,7 @@ namespace TableMonitor.Forms
         private async Task loadTransactionDataFromDbAsync()
         {
             //var sql = "SELECT DISTINCT t.TransactionId, t.CreatedOn FROM [dbo].[RetailtransactionSalesTrans] AS t ORDER BY t.CreatedOn DESC;";
-            var sql = "SELECT  t.TransactionId, t.CreatedOn FROM [dbo].[RetailTransaction] AS t  where isPaid != '1' ORDER BY t.CreatedOn DESC;";
+            var sql = "SELECT  t.thirdpartyorderid, t.modifieddatetime FROM [dbo].[DynamicPosOrders] AS t  where isPrintRequest != '1' ORDER BY t.ModifiedDateTime DESC;";
 
             var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MiddlewareDbConnection"].ConnectionString);
             var da = new SqlDataAdapter(sql, connection);
@@ -1308,7 +1186,7 @@ namespace TableMonitor.Forms
 
             try
             {
-                Invoke(new Action(() => loadTransactionDataFromDbAsync()));
+                //Invoke(new Action(() => loadTransactionDataFromDbAsync()));
                 Invoke(new Action(() => loadTransactionDataFromDbPOSAsync()));
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }

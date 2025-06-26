@@ -16,7 +16,7 @@ namespace TableMonitor
         static void Main()
         {
             // Here, you need to pass a guid or any other unique string.
-            if (!SingleInstance.Start("0f03c714-b597-4c17-a351-62f35535599a"))
+            if (!SingleInstance.Start("0f03c714-b597-4c17-a351-62f35115599a"))
             {
                 MessageBox.Show("Application is already running, Please call the vendor for support.");
                 return;
