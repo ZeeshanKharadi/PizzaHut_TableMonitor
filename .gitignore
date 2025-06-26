@@ -4,3 +4,6 @@
 
 *.vsidx
 /TableMonitor/obj/Debug/TableMonitor.csproj.AssemblyReference.cache
+/TableMonitor/obj/Debug/TableMonitor.exe
+/TableMonitor/bin/Debug/TableMonitor.exe
+/TableMonitor/bin/Debug/TableMonitor.exe.manifest
