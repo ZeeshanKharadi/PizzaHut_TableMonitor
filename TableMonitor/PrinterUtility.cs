@@ -36,36 +36,6 @@ namespace TableMonitor
         {
             Pool = pool;
 
-            //transactionData = new TransactionData
-            //{
-            //    CREATEDDATETIME = td.CREATEDDATETIME,
-            //    ReceiptID = td.ReceiptID,
-            //    StaffId = td.StaffId,
-            //    TransactionID = td.TransactionID,
-            //    TableNumber = td.TableNumber,
-            //    EmployeName = td.EmployeName,
-            //    Server = td.Server,
-            //    Information = td.Information,
-            //    SUSPENDEDTRANSACTIONID = td.SUSPENDEDTRANSACTIONID,
-            //    CHANNEL = td.CHANNEL,
-            //    Floor = td.Floor,
-            //    ThirdPartyOrderId = td.ThirdPartyOrderId,
-            //    StoreId = td.StoreId,
-            //    StoreName = td.StoreName,
-            //    TaxReg = td.TaxReg,
-            //    DiscountAmount = td.DiscountAmount,
-            //    AmountExcl = td.AmountExcl,
-            //    TaxAmount = td.TaxAmount,
-            //    AmountIncl = td.AmountIncl,
-            //    SurveyUrl = td.SurveyUrl,
-            //    QrCode = td.QrCode,
-            //    PaymentAmount = td.PaymentAmount,
-            //    FBRInvoiceNo = td.FBRInvoiceNo,
-            //    SalesLines = td.SalesLines,
-            //    PaymentLines = td.PaymentLines
-            //};
-
-
             var doc = new PrintDocument();
             var custdoc = new PrintDocument();
 
