@@ -757,7 +757,8 @@ namespace TableMonitor.Forms
                                                     PoolId = drCmd.GetString(3).ToString(),
                                                     QTY = Convert.ToInt32(Math.Abs(drCmd.GetDecimal(8))),
                                                     Comment = drCmd.GetString(9),
-                                                    ItemInfoCode = GetSubInfoCodesForSaleLine(changedEntity.TRANSACTIONID, sqlConnection)
+                                                    ItemInfoCode = GetSubInfoCodesForSaleLine(changedEntity.TRANSACTIONID, sqlConnection),
+                                                    ItemSize = drCmd.GetString(11)
                                                 });
                                             }
                                         }
@@ -1110,6 +1111,29 @@ namespace TableMonitor.Forms
             }
         }
         private string GeChannelFromDB(SqlConnection sqlConnection, TransactionData transactionDataObject)
+        {
+            using (var cmd1 = sqlConnection.CreateCommand())
+            {
+                var employeeName = string.Empty;
+
+                cmd1.CommandText = @"select top 1 f.DESCRIPTION  from ax.RETAILTRANSACTIONSALESTRANS a inner join ax.RETAILTRANSACTIONTABLE b on b.TRANSACTIONID = a.TRANSACTIONID AND a.RECEIPTID = b.RECEIPTID inner join ax.INVENTDIMCOMBINATION c on c.ITEMID = a.ITEMID inner join  ax.EcoResDistinctProductVariant d on d.RECID = c.DISTINCTPRODUCTVARIANT inner join ax.EcoResProductMasterConfiguration e on e.CONFIGPRODUCTMASTER = d.PRODUCTMASTER inner join ax.EcoResProductMasterDimValueTranslation f on f.PRODUCTMASTERDIMENSIONVALUE = e.RECID where b.TRANSACTIONID  = '" + transactionDataObject.TransactionID + "'";
+
+
+                var dr1 = cmd1.ExecuteReader();
+                // transactionDataObject = new TransactionData();
+
+                while (dr1.Read())
+                {
+                    if (dr1.HasRows)
+                    {
+                        employeeName = dr1.GetString(0);
+                    }
+                }
+                return employeeName;
+            }
+        }
+
+        private string GetSizeFromDB(SqlConnection sqlConnection, TransactionData transactionDataObject)
         {
             using (var cmd1 = sqlConnection.CreateCommand())
             {

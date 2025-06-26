@@ -14,6 +14,7 @@ public class SalesLine
     public string Comment { get; set; }
 
     public string ItemInfoCode { get; set; }
+    public string ItemSize { get; set; }
     public decimal Unitprice { get; set; }
     public decimal Taxprice { get; set; }
 

@@ -621,13 +621,13 @@ namespace TableMonitor
                 // Update the Offset based on the height of the item description
                 Offset += descriptionHeight + 10;  // Add some padding after the description
 
-                if (!string.IsNullOrEmpty(item.Comment) || !string.IsNullOrEmpty(item.ItemInfoCode))
+                if (!string.IsNullOrEmpty(item.Comment) || !string.IsNullOrEmpty(item.ItemInfoCode) || !string.IsNullOrEmpty(item.ItemSize))
                 {
                     Offset += 20;
 
                     // Measure and draw the comment and item info code
                     var rect2 = new RectangleF(startX + 70, startY + 10 + Offset, 200, 80);
-                    graphics.DrawString($"{item.ItemInfoCode} / {item.Comment}", new Font("Arial", 10), new SolidBrush(Color.Black), rect2);
+                    graphics.DrawString($" {item.ItemSize} / {item.ItemInfoCode} / {item.Comment}", new Font("Arial", 10), new SolidBrush(Color.Black), rect2);
                     Offset += 50;
 
                     // Draw some space between the items if needed

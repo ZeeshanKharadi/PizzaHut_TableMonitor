@@ -65,6 +65,7 @@ namespace TableMonitor.Class
         public string DeliveryNumber { get; set; }
         public bool IsFinalize { get; set; }
         public string Terminal { get; set; }
+        public string Size { get; set; }
         public decimal TaxRatePercent { get; set; }
 
     }
