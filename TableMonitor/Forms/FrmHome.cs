@@ -284,10 +284,10 @@ namespace TableMonitor.Forms
 
                             if (changedEntity.COMMENT != null)
                             {
-                                //if (changedEntity.COMMENT.Contains("ServerApp") == true)
-                                //{
+                                if (changedEntity.COMMENT.Contains("Simplex") == true)
+                                {
 
-                                    log_file($"ServerApp Order Des:\t Transaction ID: {changedEntity.COMMENT}\t Created ON:{changedEntity.CREATEDDATETIME} \t TransactionID : {changedEntity.TRANSACTIONID} ");
+                                    log_file($"Order Des:\t Transaction ID: {changedEntity.COMMENT}\t Created ON:{changedEntity.CREATEDDATETIME} \t TransactionID : {changedEntity.TRANSACTIONID} ");
                                     //inialize database connection.
                                     using (var sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString))
                                     {
@@ -391,7 +391,7 @@ namespace TableMonitor.Forms
 
                                         }
 
-                                    //}
+                                    }
                                 }
                                 log_file($"New Transaction:\t Transaction ID: {changedEntity.TRANSACTIONID}\t Created ON:{changedEntity.CREATEDDATETIME} \t ISSUSPENDED : {changedEntity.ISSUSPENDED} ");
                             }
@@ -399,116 +399,116 @@ namespace TableMonitor.Forms
                         }
                         break;
 
-                    case ChangeType.Update:
-                        {
-                            if (changedEntity.ISSUSPENDED == true)
-                            {
-                                //calling log function to store event log. and display.
-                                log_file($"Suspended Transaction:\t Transaction ID: {changedEntity.TRANSACTIONID}\t Created ON:{changedEntity.CREATEDDATETIME} \t ISSUSPENDED : {changedEntity.ISSUSPENDED} ");
-                                //inialize database connection.
-                                using (var sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString))
-                                {
-                                    sqlConnection.Open();
+                    //case ChangeType.Update:
+                    //    {
+                    //        if (changedEntity.ISSUSPENDED == true)
+                    //        {
+                    //            //calling log function to store event log. and display.
+                    //            log_file($"Suspended Transaction:\t Transaction ID: {changedEntity.TRANSACTIONID}\t Created ON:{changedEntity.CREATEDDATETIME} \t ISSUSPENDED : {changedEntity.ISSUSPENDED} ");
+                    //            //inialize database connection.
+                    //            using (var sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString))
+                    //            {
+                    //                sqlConnection.Open();
 
-                                    var transactionDataObject = new TransactionData();
+                    //                var transactionDataObject = new TransactionData();
                                     
-                                        //Calling Stored Procedure and pass connection in sql command.
-                                    using (var cmd = new SqlCommand(@"sp_getProductDetails", sqlConnection))
-                                    {
-                                        string Floor = GetFloorForTransaction(changedEntity.TRANSACTIONID, sqlConnection);
-                                        string FloorSubInfoCode = GetFloorIdForTransaction(changedEntity.TRANSACTIONID, sqlConnection);
+                    //                    //Calling Stored Procedure and pass connection in sql command.
+                    //                using (var cmd = new SqlCommand(@"sp_getProductDetails", sqlConnection))
+                    //                {
+                    //                    string Floor = GetFloorForTransaction(changedEntity.TRANSACTIONID, sqlConnection);
+                    //                    string FloorSubInfoCode = GetFloorIdForTransaction(changedEntity.TRANSACTIONID, sqlConnection);
 
                                        
-                                        //Specified how a command string is intpreted
-                                        cmd.CommandType = CommandType.StoredProcedure;
-                                        //Passing Parameter in stored procedure
-                                        cmd.Parameters.AddWithValue("@TransactionID", changedEntity.TRANSACTIONID);
-                                        // Commed Execution
-                                        var drCmd = cmd.ExecuteReader();
-                                        transactionDataObject = new TransactionData();
+                    //                    //Specified how a command string is intpreted
+                    //                    cmd.CommandType = CommandType.StoredProcedure;
+                    //                    //Passing Parameter in stored procedure
+                    //                    cmd.Parameters.AddWithValue("@TransactionID", changedEntity.TRANSACTIONID);
+                    //                    // Commed Execution
+                    //                    var drCmd = cmd.ExecuteReader();
+                    //                    transactionDataObject = new TransactionData();
 
-                                        while (drCmd.Read())
-                                        {
-                                            if (drCmd.HasRows)
-                                            {
-                                                transactionDataObject.CREATEDDATETIME = drCmd.GetDateTime(4).ToString();
-                                                transactionDataObject.StaffId = drCmd.GetString(5).ToString();
-                                                transactionDataObject.TransactionID = drCmd.GetString(6).ToString();
-                                                transactionDataObject.ReceiptID = drCmd.GetString(7).ToString();
-                                                transactionDataObject.TableNumber = GetTableNoFromDB(drCmd.GetString(6).ToString());
-                                                transactionDataObject.EmployeName = GetEmployeeName(sqlConnection, transactionDataObject);
-                                                transactionDataObject.SUSPENDEDTRANSACTIONID = drCmd.GetString(10).ToString();
-                                                transactionDataObject.CHANNEL = GeChannelFromDB(sqlConnection, transactionDataObject);
-                                                transactionDataObject.Server = GetServerName(changedEntity.TRANSACTIONID, sqlConnection);
-                                                transactionDataObject.DeliveryNumber = GetDeliveryNumber(changedEntity.TRANSACTIONID, sqlConnection);
-                                                transactionDataObject.Floor = Floor;
-                                                transactionDataObject.SalesLines.Add(new SalesLine
-                                                {
-                                                    Description = drCmd.GetString(1),
-                                                    ProductId = drCmd.GetInt64(2).ToString(),
-                                                    PoolId = drCmd.GetString(3).ToString(),
-                                                    QTY = Convert.ToInt32(Math.Abs(drCmd.GetDecimal(8))),
-                                                    Comment = drCmd.GetString(9),
-                                                    ItemInfoCode = GetSubInfoCodesForSaleLine(changedEntity.TRANSACTIONID, sqlConnection),
-                                                    ItemSize = drCmd.GetString(11)
-                                                });
-                                            }
-                                        }
+                    //                    while (drCmd.Read())
+                    //                    {
+                    //                        if (drCmd.HasRows)
+                    //                        {
+                    //                            transactionDataObject.CREATEDDATETIME = drCmd.GetDateTime(4).ToString();
+                    //                            transactionDataObject.StaffId = drCmd.GetString(5).ToString();
+                    //                            transactionDataObject.TransactionID = drCmd.GetString(6).ToString();
+                    //                            transactionDataObject.ReceiptID = drCmd.GetString(7).ToString();
+                    //                            transactionDataObject.TableNumber = GetTableNoFromDB(drCmd.GetString(6).ToString());
+                    //                            transactionDataObject.EmployeName = GetEmployeeName(sqlConnection, transactionDataObject);
+                    //                            transactionDataObject.SUSPENDEDTRANSACTIONID = drCmd.GetString(10).ToString();
+                    //                            transactionDataObject.CHANNEL = GeChannelFromDB(sqlConnection, transactionDataObject);
+                    //                            transactionDataObject.Server = GetServerName(changedEntity.TRANSACTIONID, sqlConnection);
+                    //                            transactionDataObject.DeliveryNumber = GetDeliveryNumber(changedEntity.TRANSACTIONID, sqlConnection);
+                    //                            transactionDataObject.Floor = Floor;
+                    //                            transactionDataObject.SalesLines.Add(new SalesLine
+                    //                            {
+                    //                                Description = drCmd.GetString(1),
+                    //                                ProductId = drCmd.GetInt64(2).ToString(),
+                    //                                PoolId = drCmd.GetString(3).ToString(),
+                    //                                QTY = Convert.ToInt32(Math.Abs(drCmd.GetDecimal(8))),
+                    //                                Comment = drCmd.GetString(9),
+                    //                                ItemInfoCode = GetSubInfoCodesForSaleLine(changedEntity.TRANSACTIONID, sqlConnection),
+                    //                                ItemSize = drCmd.GetString(11)
+                    //                            });
+                    //                        }
+                    //                    }
 
-                                        using (var sqlCommand = sqlConnection.CreateCommand())
-                                        {
-                                            sqlCommand.CommandText = $"select PrinterName from ItemWisePrinterConfiguration where PoolId ='Master'";
-                                            var dr = sqlCommand.ExecuteReader();
+                    //                    using (var sqlCommand = sqlConnection.CreateCommand())
+                    //                    {
+                    //                        sqlCommand.CommandText = $"select PrinterName from ItemWisePrinterConfiguration where PoolId ='Master'";
+                    //                        var dr = sqlCommand.ExecuteReader();
 
-                                            while (dr.Read())
-                                            {
-                                                if (dr.HasRows && transactionDataObject.ReceiptID != null)
-                                                {
-                                                    var printername = dr.GetString(0);
-                                                    // print the receipt
-                                                    PrinterUtility.Print(printername, "Master", transactionDataObject);
-                                                }
-                                            }
-                                        }
-                                        // distint pools from sale line and store in array
-                                        var distinctPools = transactionDataObject.SalesLines.Select(x => x.PoolId).Distinct();
-                                        foreach (var pool in distinctPools)
-                                        {
-                                            var sortedLines = new List<SalesLine>();
-                                            foreach (var line in transactionDataObject.SalesLines)
-                                            {
-                                                if (line.PoolId == pool)
-                                                {
-                                                    sortedLines.Add(line);
-                                                }
-                                            }
-                                            var data = new TransactionData
-                                            {
-                                                CREATEDDATETIME = transactionDataObject.CREATEDDATETIME,
-                                                TransactionID = transactionDataObject.TransactionID,
-                                                ReceiptID = transactionDataObject.ReceiptID,
-                                                SalesLines = sortedLines,
-                                                StaffId = transactionDataObject.StaffId,
-                                                SUSPENDEDTRANSACTIONID = transactionDataObject.SUSPENDEDTRANSACTIONID,
-                                                CHANNEL = transactionDataObject.CHANNEL
-                                            };
-                                            string floorCode = null;
-                                            if (pool == "04")
-                                            {
-                                                floorCode = FloorSubInfoCode.ToString();
-                                            }
+                    //                        while (dr.Read())
+                    //                        {
+                    //                            if (dr.HasRows && transactionDataObject.ReceiptID != null)
+                    //                            {
+                    //                                var printername = dr.GetString(0);
+                    //                                // print the receipt
+                    //                                PrinterUtility.Print(printername, "Master", transactionDataObject);
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                    // distint pools from sale line and store in array
+                    //                    var distinctPools = transactionDataObject.SalesLines.Select(x => x.PoolId).Distinct();
+                    //                    foreach (var pool in distinctPools)
+                    //                    {
+                    //                        var sortedLines = new List<SalesLine>();
+                    //                        foreach (var line in transactionDataObject.SalesLines)
+                    //                        {
+                    //                            if (line.PoolId == pool)
+                    //                            {
+                    //                                sortedLines.Add(line);
+                    //                            }
+                    //                        }
+                    //                        var data = new TransactionData
+                    //                        {
+                    //                            CREATEDDATETIME = transactionDataObject.CREATEDDATETIME,
+                    //                            TransactionID = transactionDataObject.TransactionID,
+                    //                            ReceiptID = transactionDataObject.ReceiptID,
+                    //                            SalesLines = sortedLines,
+                    //                            StaffId = transactionDataObject.StaffId,
+                    //                            SUSPENDEDTRANSACTIONID = transactionDataObject.SUSPENDEDTRANSACTIONID,
+                    //                            CHANNEL = transactionDataObject.CHANNEL
+                    //                        };
+                    //                        string floorCode = null;
+                    //                        if (pool == "04")
+                    //                        {
+                    //                            floorCode = FloorSubInfoCode.ToString();
+                    //                        }
 
-                                            // send only data which belong to pool
-                                            PrinterConfiguration(pool, transactionDataObject, floorCode);
-                                        }
-                                    }
-                                }
-                            }
-                            // is_Suspended False
+                    //                        // send only data which belong to pool
+                    //                        PrinterConfiguration(pool, transactionDataObject, floorCode);
+                    //                    }
+                    //                }
+                    //            }
+                    //        }
+                    //        // is_Suspended False
 
 
-                        }
-                        break;
+                    //    }
+                    //    break;
 
 
                         
