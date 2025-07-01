@@ -382,11 +382,12 @@ namespace TableMonitor
             Offset = Offset + smallinc + 10;
             DrawAtStart($"Terminal: {transactionData.Terminal}", Offset);
             Offset = Offset + smallinc + 5;
-            DrawAtStart($"Employee: {transactionData.StaffId}", Offset);
-            Offset = Offset + smallinc + 5;
-            DrawAtStart($"Table No: {transactionData.TableNumber}", Offset);
-            Offset = Offset + smallinc + 5;
-            DrawAtStart($"Server Name: {transactionData.Server}", Offset);
+            DrawAtStart($"Address: {transactionData.StaffId}", Offset);
+            //DrawAtStart($"Employee: {transactionData.StaffId}", Offset);
+            //Offset = Offset + smallinc + 5;
+            //DrawAtStart($"Table No: {transactionData.TableNumber}", Offset);
+            //Offset = Offset + smallinc + 5;
+            //DrawAtStart($"Server Name: {transactionData.Server}", Offset);
 
 
             Offset = Offset + smallinc + 10;
@@ -409,7 +410,7 @@ namespace TableMonitor
             {
                 srNo++;
                 InsertItemCustPrint(srNo, item, Offset);
-                Offset = Offset + 60;
+                Offset = Offset + 30;       // this is gap between orders
 
             }
 
@@ -722,9 +723,10 @@ namespace TableMonitor
                 //}
 
             }
-            Offset = Offset + 40;
-            String underLine = "----------------------------------";
-            DrawLine(underLine, largefont, Offset, 0);
+              //  down line are between orders
+            //Offset = Offset + 40;
+            //String underLine = "----------------------------------";
+            //DrawLine(underLine, largefont, Offset, 0);
         }
         private static void InsertHeaderStyleItemCustPrint(string col1, string col2, string col3, string col4, string col5, string col6, string col7, string col8, string col9, string col10, int Offset)
         {
