@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="TableMonitor.exe" version="1.0.0.82" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="TableMonitor.exe" version="1.0.0.84" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <application />
   <entryPoint>
     <assemblyIdentity name="TableMonitor" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
@@ -306,17 +306,35 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TableMonitor.exe" size="648192">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TableMonitor.exe" size="649728">
       <assemblyIdentity name="TableMonitor" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ae35VeP1RiafM7ODAsSYRIBNAD3P3Z1T+4ONr7wYV5I=</dsig:DigestValue>
+        <dsig:DigestValue>cGUS3zmQbtVGMs2L29144HkSv4aoTvzb0WDUe5kQbIk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
+  <file name="Images\logo.png" size="35237">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>9O3Bjg15HZnZMdqVxyjN+KZlKW0U2GQ5QSM4M/6QXTg=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Images\pizza_hut2.png" size="4081">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>bg02xJ8SOzZJPhT07P3N1l2n4nybUVCiuva2Pcup1Zk=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="TableMonitor.exe.config" size="914">
     <hash>
       <dsig:Transforms>

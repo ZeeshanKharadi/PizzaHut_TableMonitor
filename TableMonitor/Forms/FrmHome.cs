@@ -313,12 +313,20 @@ namespace TableMonitor.Forms
                                                 {
                                                     transactionDataObject.CREATEDDATETIME = drCmd.GetDateTime(4).ToString();
                                                     transactionDataObject.StaffId = drCmd.GetString(5).ToString();
-                                                    transactionDataObject.TransactionID = drCmd.GetString(6).ToString();
+                                                    transactionDataObject.TransactionID = drCmd.GetString(6).ToString();//[Address]
+                                                    transactionDataObject.CUSTNAME = drCmd.GetString(19).ToString(); // 
+                                                    transactionDataObject.Address = drCmd.GetString(20).ToString();// 
+                                                    transactionDataObject.Phone = drCmd.GetString(21).ToString();// 
+                                                    transactionDataObject.IsPaid = drCmd.GetString(22).ToString();// 
+                                                    transactionDataObject.paymode = drCmd.GetString(23).ToString();// 
+                                                    transactionDataObject.CHANNEL = drCmd.GetString(24).ToString();// 
+                                                    transactionDataObject.ThirdPartyOrderId = drCmd.GetString(25).ToString();// 
+                                                    transactionDataObject.TaxIdentificationNumber = drCmd.GetString(26).ToString();// 
                                                     transactionDataObject.ReceiptID = drCmd.GetString(7).ToString();
                                                    // transactionDataObject.TableNumber = drCmd.GetString(14).ToString();//GetTableNoFromDB(drCmd.GetString(6).ToString());
                                                     transactionDataObject.EmployeName = GetEmployeeName(sqlConnection, transactionDataObject);
                                                     transactionDataObject.SUSPENDEDTRANSACTIONID = drCmd.GetString(10).ToString();
-                                                    transactionDataObject.CHANNEL = GeChannelFromDB(sqlConnection, transactionDataObject);
+                                                    //transactionDataObject.CHANNEL = GeChannelFromDB(sqlConnection, transactionDataObject);
                                                     transactionDataObject.StoreId = GeStoreNameFromDB(sqlConnection, transactionDataObject, 3); //drCmd.GetString(11).ToString();
                                                     transactionDataObject.StoreName = GeStoreNameFromDB(sqlConnection, transactionDataObject, 1);
                                                     transactionDataObject.TaxReg = GeStoreNameFromDB(sqlConnection, transactionDataObject, 2);

@@ -48,12 +48,17 @@ namespace TableMonitor
                     ReceiptID = td.ReceiptID,
                     StaffId = td.StaffId,
                     TransactionID = td.TransactionID,
+                    CUSTNAME = td.CUSTNAME, // 
+                    Address = td.Address,               // 
+                    Phone = td.Phone,             // 
                     TableNumber = td.TableNumber,
                     EmployeName = td.EmployeName,
                     Server = td.Server,
                     Information = td.Information,
                     SUSPENDEDTRANSACTIONID = td.SUSPENDEDTRANSACTIONID,
                     CHANNEL = td.CHANNEL,
+                    IsPaid = td.IsPaid, // 
+                    paymode = td.paymode, // 
                     Floor = td.Floor,
                     ThirdPartyOrderId = td.ThirdPartyOrderId,
                     StoreId = td.StoreId,
@@ -70,7 +75,8 @@ namespace TableMonitor
                     SalesLines = td.SalesLines,
                     PaymentLines = td.PaymentLines,
                     Terminal = td.Terminal,
-                    TaxRatePercent = td.TaxRatePercent
+                    TaxRatePercent = td.TaxRatePercent,
+                    TaxIdentificationNumber = td.TaxIdentificationNumber
                     
                 };
                 custdoc.DefaultPageSettings.PrinterSettings.PrinterName = printerName;
@@ -112,12 +118,17 @@ namespace TableMonitor
                     ReceiptID = td.ReceiptID,
                     StaffId = td.StaffId,
                     TransactionID = td.TransactionID,
+                    CUSTNAME = td.CUSTNAME, // 
+                    Address = td.Address,               // 
+                    Phone = td.Phone,             // 
                     TableNumber = td.TableNumber,
                     EmployeName = td.EmployeName,
                     Server = td.Server,
                     Information = td.Information,
                     SUSPENDEDTRANSACTIONID = td.SUSPENDEDTRANSACTIONID,
                     CHANNEL = td.CHANNEL,
+                    IsPaid = td.IsPaid,  //  
+                    paymode = td.paymode, // 
                     Floor = td.Floor,
                     ThirdPartyOrderId = td.ThirdPartyOrderId,
                     StoreId = td.StoreId,
@@ -131,7 +142,8 @@ namespace TableMonitor
                     QrCode = td.QrCode,
                     PaymentAmount = td.PaymentAmount,
                     FBRInvoiceNo = td.FBRInvoiceNo,
-                    DeliveryNumber = td.DeliveryNumber
+                    DeliveryNumber = td.DeliveryNumber,
+                    TaxIdentificationNumber = td.TaxIdentificationNumber
                 };
                 if (pool != "Master")
                 {
@@ -214,7 +226,8 @@ namespace TableMonitor
             {
 
                 //DrawAtStartForHeader($"OrderNo: {transactionData.ThirdPartyOrderId}", Offset);
-                string last6Digits = transactionData.ThirdPartyOrderId.Substring(transactionData.ThirdPartyOrderId.Length - 6);
+               // string last6Digits = transactionData.ThirdPartyOrderId.Substring(transactionData.ThirdPartyOrderId.Length - 6);
+                string last6Digits = transactionData.ThirdPartyOrderId;
                 DrawAtStartForHeader($"OrderNo: {last6Digits}", Offset);
                 Offset = Offset + mediuminc;
                 Offset = Offset + mediuminc;
@@ -226,7 +239,7 @@ namespace TableMonitor
             DrawAtStart($"Receipt Id: {transactionData.ReceiptID}", Offset);
 
             Offset = Offset + mediuminc;
-            DrawAtStart($"Transaction: {transactionData.TransactionID}", Offset);
+            DrawAtStart($"Transaction: {transactionData.TransactionID }", Offset);
 
             //Offset = Offset + mediuminc;
             //DrawAtStart($"ThirdPartyOrderId: {transactionData.ThirdPartyOrderId}", Offset);
@@ -335,18 +348,29 @@ namespace TableMonitor
             var totalfont = new Font("Arial", 9);
             var largefont = new Font("Arial", 16);
             var linefont = new Font("Arial", 16, FontStyle.Bold);
+            var biggestfont = new Font("Arial", 18, FontStyle.Bold);
+            var paymentbold = new Font("Arial", 10, FontStyle.Bold);  //add this line to bol payment
             var Offset = 2;
             int smallinc = 10, mediuminc = 20, largeinc = 30;
             var startX = 10;
             var startY = 5;
             decimal changeback = 0.00M;
 
+            //graphics.DrawString($"Channel ", totalfont,
+            //               new SolidBrush(Color.Black), startX, Offset); 
+            //Offset = Offset + mediuminc;
+          
 
+            
+            Offset = Offset + smallinc + 10;
+            graphics.DrawString($"   {transactionData.CHANNEL}\n", biggestfont,
+                              new SolidBrush(Color.Black), 40, Offset);  // changed Offset to StartY
+            Offset = Offset + smallinc + 30;
             graphics.DrawString($"Welcome To {transactionData.StoreName}", totalfont,
-                              new SolidBrush(Color.Black), 50, startY);
+                              new SolidBrush(Color.Black), 50, Offset); //StartY to Offset
 
             Offset = Offset + smallinc + 10;
-            graphics.DrawString($"Store ID:         {transactionData.StoreId}", totalfont,
+            graphics.DrawString($"Store ID:         {transactionData.TaxIdentificationNumber}", totalfont,
                     new SolidBrush(Color.Black), 50, Offset);
 
             Offset = Offset + smallinc + 10;
@@ -357,7 +381,36 @@ namespace TableMonitor
             graphics.DrawString($"PIZZA HUT", largefont,
                              new SolidBrush(Color.Black), 70, Offset);
 
-          
+            //// IMAGE HERE
+
+            //Image img = Image.FromFile("Images/pizza_hut2.png");
+
+            //Point offset = new Point(50, 50);
+            //graphics.DrawImage(img, offset);
+
+            //// this is for just image gap below three line gap
+            //Offset = Offset + largeinc + 10;
+            //graphics.DrawString($"  ", largefont,
+            //                 new SolidBrush(Color.Black), 70, Offset);   // till here
+
+            // Add some vertical spacing before the heading
+           // Offset = Offset + smallinc + 10;
+
+            // Draw the heading
+           // graphics.DrawString("PIZZA HUT", largefont, new SolidBrush(Color.Black), 70, Offset);
+
+            // Measure the height of the heading text
+           // SizeF textSize = graphics.MeasureString("PIZZA HUT", largefont); // comment this due to doubling
+
+            // Update Offset to move below the heading text
+           // Offset += (int)textSize.Height + 10; // +10 for padding  // this line comment too because of doubling
+
+            // Load image
+          //  Image img = Image.FromFile("Images/logo.png");
+
+            // Draw image below the heading
+          //  Point imageOffset = new Point(50, Offset); // same X, updated Y
+          //  graphics.DrawImage(img, imageOffset); // till here image testing
 
             if (transactionData.ReceiptID != null || transactionData.ReceiptID != "")
             {
@@ -365,24 +418,37 @@ namespace TableMonitor
                 graphics.DrawString($"ORDER NUMBER: {transactionData.ReceiptID.Substring(transactionData.ReceiptID.Length - 4)}", largefont,
                               new SolidBrush(Color.Black), 20, Offset);
             }
-            Offset = Offset + largeinc + 15;
+            Offset = Offset + mediuminc + 15;
             DrawAtStart("Date: " + DateTime.Now, Offset);
 
             Offset = Offset + smallinc + 5;
             DrawAtStart($"Receipt Number: {transactionData.ReceiptID}", Offset);
 
-            Offset = Offset + smallinc + 10;
-            DrawAtStart($"Tax Invoice: {transactionData.FBRInvoiceNo}", Offset);
+            Offset = Offset + smallinc + 5;
+            DrawAtStart($"ThirdPartyOrderId: {transactionData.ThirdPartyOrderId}", Offset);
+
+            //Offset = Offset + smallinc + 10;
+            //DrawAtStart($"Tax Invoice: {transactionData.FBRInvoiceNo}", Offset);
 
             Offset = Offset + smallinc + 5;
             DrawAtStart($"Transaction No: {transactionData.TransactionID}", Offset);
+            Offset = Offset + smallinc + 5;
+            DrawAtStart($"Terminal: {transactionData.Terminal}", Offset);
+
+            Offset = Offset + smallinc + 5;                                         
+            DrawAtStart($"Customer Name: {transactionData.CUSTNAME}", Offset);      
+
+            Offset = Offset + smallinc + 5;                                         
+            DrawAtStart($"Address: {transactionData.Address}", Offset);             
+
+            Offset = Offset + smallinc + 5;                                         
+            DrawAtStart($"Phone: {transactionData.Phone}", Offset);                 
 
             String underLine = "--------------------------------";
 
-            Offset = Offset + smallinc + 10;
-            DrawAtStart($"Terminal: {transactionData.Terminal}", Offset);
-            Offset = Offset + smallinc + 5;
-            DrawAtStart($"Address: {transactionData.StaffId}", Offset);
+
+            //Offset = Offset + smallinc + 5;
+            //DrawAtStart($"Employee: {transactionData.StaffId}", Offset);
             //DrawAtStart($"Employee: {transactionData.StaffId}", Offset);
             //Offset = Offset + smallinc + 5;
             //DrawAtStart($"Table No: {transactionData.TableNumber}", Offset);
@@ -390,8 +456,8 @@ namespace TableMonitor
             //DrawAtStart($"Server Name: {transactionData.Server}", Offset);
 
 
-            Offset = Offset + smallinc + 10;
-            DrawAtStart($"Channel Id: {transactionData.CHANNEL}", Offset);
+            //Offset = Offset + smallinc + 10;                              // Channel ID
+            //DrawAtStart($"Channel Id: {transactionData.CHANNEL}", Offset);
 
             Offset = Offset + smallinc;
             underLine = "-----------------------------------";
@@ -419,11 +485,15 @@ namespace TableMonitor
             DrawLine(underLine, largefont, Offset, 0);
 
 
-            Offset = Offset + largeinc;
-            graphics.DrawString($"Channel ", totalfont,
+            Offset = Offset + mediuminc;  // yahan += lagaya hai ta k gap ziyada hojaye wrna + hta dengy
+            graphics.DrawString($"Paid ", totalfont,
                               new SolidBrush(Color.Black), startX, Offset);
-            graphics.DrawString($"{transactionData.CHANNEL}", totalfont,
+            graphics.DrawString($"{transactionData.IsPaid}", totalfont,
                               new SolidBrush(Color.Black), 200, Offset);
+
+            
+           // Offset = Offset + mediuminc;
+          
             if (transactionData.DiscountAmount > 0)
             {
                 Offset = Offset + mediuminc;
@@ -448,18 +518,40 @@ namespace TableMonitor
             Offset = Offset + mediuminc;
             graphics.DrawString($"Total: ", totalfont,
                               new SolidBrush(Color.Black), startX, Offset);
-            graphics.DrawString($"{transactionData.AmountIncl}", totalfont,
-                              new SolidBrush(Color.Black), 200, Offset);
 
 
-            Offset = Offset + smallinc + 5;
-            graphics.DrawString($"Payment", totalfont,
+
+
+            //graphics.DrawString($"{transactionData.AmountIncl}", totalfont,  //{transactionData.AmountIncl}
+            //                  new SolidBrush(Color.Black), 200, Offset);
+
+            //   
+            foreach (var item in receipt.PaymentLines)
+            {
+                //Offset = Offset + mediuminc;
+                //graphics.DrawString($"{transactionData.paymode}", totalfont, //graphics.DrawString($"{item.Tendertype}", totalfont,
+                //                  new SolidBrush(Color.Black), startX, Offset);
+
+                graphics.DrawString($"{item.Amount}", totalfont,
+                                  new SolidBrush(Color.Black), 200, Offset);
+            }
+            //   section end 
+
+
+            Offset = Offset + mediuminc + 5;
+            graphics.DrawString($"Payment",paymentbold,       // removed totalfont
                               new SolidBrush(Color.Black), startX, Offset);
+            //Offset = Offset + mediuminc;
+            //graphics.DrawString($"Paymode ", totalfont,
+            //                  new SolidBrush(Color.Black), startX, Offset);
+            //graphics.DrawString($"{transactionData.paymode}", totalfont,
+            //                  new SolidBrush(Color.Black), 200, Offset);
+
 
             foreach (var item in receipt.PaymentLines)
             {
                 Offset = Offset + mediuminc;
-                graphics.DrawString($"{item.Tendertype}", totalfont,
+                graphics.DrawString($"{transactionData.paymode}", totalfont, //graphics.DrawString($"{item.Tendertype}", totalfont,
                                   new SolidBrush(Color.Black), startX, Offset);
 
                 graphics.DrawString($"{item.Amount}", totalfont,
@@ -469,34 +561,48 @@ namespace TableMonitor
 
             Offset = Offset + smallinc;
             underLine = "......................................";
-            DrawLine(underLine, linefont, Offset, 0);
+            DrawLine(underLine, largefont, Offset, 0);
 
-            if (transactionData.ReceiptID != "")
-            {
-                Offset = Offset + largeinc + 25;
-                graphics.DrawString($"SCAN BELOW TO TRACK THIS ORDER", minifont,
-                              new SolidBrush(Color.Black), 40, Offset);
-                //string invoiceNumber = "125555"; // Replace with actual data
-                //transactionData.QrCode = invoiceNumber;
-                GenerateQRCodeWithGraphicsCustom(graphics, transactionData.ReceiptID, Offset);
-            }
+            //if (transactionData.ReceiptID != "")
+            //{
+            //    Offset = Offset + largeinc + 25;
+            //    graphics.DrawString($"SCAN BELOW TO TRACK THIS ORDER", minifont,
+            //                  new SolidBrush(Color.Black), 40, Offset);
+            //    //string invoiceNumber = "125555"; // Replace with actual data
+            //    //transactionData.QrCode = invoiceNumber;
+            //    GenerateQRCodeWithGraphicsCustom(graphics, transactionData.ReceiptID, Offset);
+            //}
 
-            if (transactionData.FBRInvoiceNo != "")
-            {
-                Offset = Offset + mediuminc + 100;
-                graphics.DrawString($"SCAN BELOW TO VERIFY TAX INVOICE", minifont,
-                              new SolidBrush(Color.Black), 40, Offset);
-                //string invoiceNumber = "125555"; // Replace with actual data
-                //transactionData.QrCode = invoiceNumber;
-                GenerateQRCodeWithGraphicsCustom(graphics, transactionData.FBRInvoiceNo, Offset);
-            }
+            //if (transactionData.FBRInvoiceNo != "")   // QR Code 
+            //{
+            //    Offset = Offset + mediuminc + 100;
+            //    graphics.DrawString($"SCAN BELOW TO VERIFY TAX INVOICE", minifont,
+            //                  new SolidBrush(Color.Black), 40, Offset);
+            //    //string invoiceNumber = "125555"; // Replace with actual data
+            //    //transactionData.QrCode = invoiceNumber;
+            //    GenerateQRCodeWithGraphicsCustom(graphics, transactionData.FBRInvoiceNo, Offset);
+            //}
 
-            Offset = Offset + mediuminc + 100;
-            graphics.DrawString($"CONNECT WITH PIZZA HUT", totalfont, new SolidBrush(Color.Black), 60, Offset);
+            Offset = Offset + smallinc;
+            underLine = "                ";
+            DrawLine(underLine, largefont, Offset, 0);
+
+
 
             Offset = Offset + mediuminc;
-            graphics.DrawString($"www.PIZZAHUT.com  |  111-44-66-99", totalfont,
-                              new SolidBrush(Color.Black), 40, Offset);
+            graphics.DrawString($"www.pizzahutpakistan.com", totalfont,
+                             new SolidBrush(Color.Black), 60, Offset);
+
+            Offset = Offset + mediuminc;
+            graphics.DrawString($"UAN : 111-000-765 ", totalfont,
+                              new SolidBrush(Color.Black), 60, Offset); //removed statX and add 200..ye jo 60 hai left se space hota hai
+
+            Offset = Offset + mediuminc + 40; // ye jo 70 hai ooper wale se kitna gap hai
+            graphics.DrawString($"CONNECT WITH PIZZA HUT", totalfont,
+                new SolidBrush(Color.Black), 50, Offset);
+
+            Offset = Offset + mediuminc;
+           
 
         }
 

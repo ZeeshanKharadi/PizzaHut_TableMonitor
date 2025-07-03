@@ -21,6 +21,10 @@ namespace TableMonitor.Class
         public string ReceiptID { get; set; } //ok
 
         public string TransactionID { get; set; } //ok
+        public string CUSTNAME { get; set; } //  
+        public string Address {  get; set; } //  
+        public string Phone { get; set; } // 
+      
 
         [JsonPropertyName("SalesLines")]
         public List<SalesLine> SalesLines { get; set; }
@@ -34,6 +38,8 @@ namespace TableMonitor.Class
         public string SUSPENDEDTRANSACTIONID { get; set; }
 
         public string CHANNEL { get; set; }
+        public string IsPaid { get; set; } // 
+        public string paymode { get; set; }
         public string ThirdPartyOrderId { get; set; }
         public string Floor { get; set; }
 
@@ -66,6 +72,7 @@ namespace TableMonitor.Class
         public bool IsFinalize { get; set; }
         public string Terminal { get; set; }
         public string Size { get; set; }
+        public string TaxIdentificationNumber { get; set; }
         public decimal TaxRatePercent { get; set; }
 
     }
