@@ -374,7 +374,7 @@ namespace TableMonitor
                     new SolidBrush(Color.Black), 50, Offset);
 
             Offset = Offset + smallinc + 10;
-            graphics.DrawString($"PNTN Number:  4563773-4", totalfont,
+            graphics.DrawString($"PNTN Number:  9661642-7", totalfont,
                     new SolidBrush(Color.Black), 50, Offset);
 
             Offset = Offset + smallinc + 10;
