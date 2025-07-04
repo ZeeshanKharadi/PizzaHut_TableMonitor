@@ -363,7 +363,7 @@ namespace TableMonitor
 
             
             Offset = Offset + smallinc + 10;
-            graphics.DrawString($"   {transactionData.CHANNEL}\n", biggestfont,
+            graphics.DrawString($"     {transactionData.CHANNEL}\n", biggestfont,
                               new SolidBrush(Color.Black), 40, Offset);  // changed Offset to StartY
             Offset = Offset + smallinc + 30;
             graphics.DrawString($"Welcome To {transactionData.StoreName}", totalfont,
@@ -381,6 +381,21 @@ namespace TableMonitor
             graphics.DrawString($"PIZZA HUT", largefont,
                              new SolidBrush(Color.Black), 70, Offset);
 
+
+            Offset += largefont.Height + 10; // Add space after heading
+                                             // Load and Resize Image
+            Image img = Image.FromFile("Images/logo.png");
+
+            // Resize image (e.g., 100x100 pixels)
+            Image resizedImg = new Bitmap(img, new Size(80, 50));
+
+            // Draw image below heading, centered
+            graphics.DrawImage(resizedImg, new Point(90, Offset));
+            Offset += largefont.Height + 10;
+            // Update Offset after image if you want to draw more things later
+            //Offset += resizedImg.Height + 10;// isse picture logo k baad ziyada gap arha hai
+
+
             //// IMAGE HERE
 
             //Image img = Image.FromFile("Images/pizza_hut2.png");
@@ -394,23 +409,23 @@ namespace TableMonitor
             //                 new SolidBrush(Color.Black), 70, Offset);   // till here
 
             // Add some vertical spacing before the heading
-           // Offset = Offset + smallinc + 10;
+            // Offset = Offset + smallinc + 10;
 
             // Draw the heading
-           // graphics.DrawString("PIZZA HUT", largefont, new SolidBrush(Color.Black), 70, Offset);
+            // graphics.DrawString("PIZZA HUT", largefont, new SolidBrush(Color.Black), 70, Offset);
 
             // Measure the height of the heading text
-           // SizeF textSize = graphics.MeasureString("PIZZA HUT", largefont); // comment this due to doubling
+            // SizeF textSize = graphics.MeasureString("PIZZA HUT", largefont); // comment this due to doubling
 
             // Update Offset to move below the heading text
-           // Offset += (int)textSize.Height + 10; // +10 for padding  // this line comment too because of doubling
+            // Offset += (int)textSize.Height + 10; // +10 for padding  // this line comment too because of doubling
 
             // Load image
-          //  Image img = Image.FromFile("Images/logo.png");
+            //  Image img = Image.FromFile("Images/logo.png");
 
             // Draw image below the heading
-          //  Point imageOffset = new Point(50, Offset); // same X, updated Y
-          //  graphics.DrawImage(img, imageOffset); // till here image testing
+            //  Point imageOffset = new Point(50, Offset); // same X, updated Y
+            //  graphics.DrawImage(img, imageOffset); // till here image testing
 
             if (transactionData.ReceiptID != null || transactionData.ReceiptID != "")
             {
@@ -483,10 +498,11 @@ namespace TableMonitor
             Offset = Offset + smallinc;
             underLine = "-----------------------------------";
             DrawLine(underLine, largefont, Offset, 0);
+           
 
 
-            Offset = Offset + mediuminc;  // yahan += lagaya hai ta k gap ziyada hojaye wrna + hta dengy
-            graphics.DrawString($"Paid ", totalfont,
+            Offset = Offset + mediuminc+5;  // yahan += lagaya hai ta k gap ziyada hojaye wrna + hta dengy
+            graphics.DrawString($"Paid ", totalfont, //totalfont font hata kr offset likha hai
                               new SolidBrush(Color.Black), startX, Offset);
             graphics.DrawString($"{transactionData.IsPaid}", totalfont,
                               new SolidBrush(Color.Black), 200, Offset);
@@ -597,7 +613,7 @@ namespace TableMonitor
             graphics.DrawString($"UAN : 111-000-765 ", totalfont,
                               new SolidBrush(Color.Black), 60, Offset); //removed statX and add 200..ye jo 60 hai left se space hota hai
 
-            Offset = Offset + mediuminc + 40; // ye jo 70 hai ooper wale se kitna gap hai
+            Offset = Offset + mediuminc; // ye jo 70 hai ooper wale se kitna gap hai//Offset = Offset + mediuminc + 40;
             graphics.DrawString($"CONNECT WITH PIZZA HUT", totalfont,
                 new SolidBrush(Color.Black), 50, Offset);
 
