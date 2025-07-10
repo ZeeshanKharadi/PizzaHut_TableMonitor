@@ -1,12 +1,13 @@
 ﻿using iTextSharp.text.pdf.qrcode;
+using QRCoder;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
-using TableMonitor.Class;
-using QRCoder;
-using QRCode = QRCoder.QRCode;
 using System.Windows.Forms;
+using TableMonitor.Class;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using QRCode = QRCoder.QRCode;
 
 namespace TableMonitor
 {
@@ -387,45 +388,18 @@ namespace TableMonitor
             Image img = Image.FromFile("Images/logo.png");
 
             // Resize image (e.g., 100x100 pixels)
-            Image resizedImg = new Bitmap(img, new Size(80, 50));
+            Image resizedImg = new Bitmap(img, new Size(100, 70));
 
             // Draw image below heading, centered
-            graphics.DrawImage(resizedImg, new Point(90, Offset));
+            graphics.DrawImage(resizedImg, new Point(85, Offset)); //ye 90 left se gap hai
             Offset += largefont.Height + 10;
             // Update Offset after image if you want to draw more things later
             //Offset += resizedImg.Height + 10;// isse picture logo k baad ziyada gap arha hai
 
-
-            //// IMAGE HERE
-
-            //Image img = Image.FromFile("Images/pizza_hut2.png");
-
-            //Point offset = new Point(50, 50);
-            //graphics.DrawImage(img, offset);
-
-            //// this is for just image gap below three line gap
-            //Offset = Offset + largeinc + 10;
-            //graphics.DrawString($"  ", largefont,
-            //                 new SolidBrush(Color.Black), 70, Offset);   // till here
-
-            // Add some vertical spacing before the heading
-            // Offset = Offset + smallinc + 10;
-
-            // Draw the heading
-            // graphics.DrawString("PIZZA HUT", largefont, new SolidBrush(Color.Black), 70, Offset);
-
-            // Measure the height of the heading text
-            // SizeF textSize = graphics.MeasureString("PIZZA HUT", largefont); // comment this due to doubling
-
+         
             // Update Offset to move below the heading text
             // Offset += (int)textSize.Height + 10; // +10 for padding  // this line comment too because of doubling
 
-            // Load image
-            //  Image img = Image.FromFile("Images/logo.png");
-
-            // Draw image below the heading
-            //  Point imageOffset = new Point(50, Offset); // same X, updated Y
-            //  graphics.DrawImage(img, imageOffset); // till here image testing
 
             if (transactionData.ReceiptID != null || transactionData.ReceiptID != "")
             {
@@ -451,12 +425,58 @@ namespace TableMonitor
             DrawAtStart($"Terminal: {transactionData.Terminal}", Offset);
 
             Offset = Offset + smallinc + 5;                                         
-            DrawAtStart($"Customer Name: {transactionData.CUSTNAME}", Offset);      
+            DrawAtStart($"Customer Name: {transactionData.CUSTNAME}", Offset);
 
-            Offset = Offset + smallinc + 5;                                         
-            DrawAtStart($"Address: {transactionData.Address}", Offset);             
+            Offset = Offset + smallinc + 5;
+            //DrawAtStart($"Address: {transactionData.Address}", Offset);
 
-            Offset = Offset + smallinc + 5;                                         
+            string address = transactionData.Address;
+            string[] words = address.Split(new[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            string line = "";
+            bool isFirstLine = true;
+            int maxLineLength = 33;
+
+            foreach (var word in words)
+            {
+                // Check if adding the word exceeds the max line length
+                if ((line + " " + word).Trim().Length > maxLineLength)
+                {
+                    // Print the current line
+                    if (isFirstLine)
+                    {
+                        DrawAtStart($"Address: {line.Trim()}", Offset);
+                        isFirstLine = false;
+                    }
+                    else
+                    {
+                        DrawAtStart($"               {line.Trim()}", Offset);
+                    }
+
+                    Offset += mediuminc;
+                    line = word; // Start a new line with the current word
+                }
+                else
+                {
+                    line += " " + word; // Add word to current line
+                }
+            }
+
+            // Print the last line if anything left
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                if (isFirstLine)
+                {
+                    DrawAtStart($"Address: {line.Trim()}", Offset);
+                }
+                else
+                {
+                    DrawAtStart($"               {line.Trim()}", Offset);
+                }
+                Offset += mediuminc;
+            }
+
+            //Offset = Offset + smallinc + 5;                                         
             DrawAtStart($"Phone: {transactionData.Phone}", Offset);                 
 
             String underLine = "--------------------------------";
@@ -522,13 +542,13 @@ namespace TableMonitor
             Offset = Offset + mediuminc;
             graphics.DrawString($"Total Exc. Tax: ", totalfont,
                               new SolidBrush(Color.Black), startX, Offset);
-            graphics.DrawString($"{transactionData.AmountExcl}", totalfont,
+            graphics.DrawString($"{transactionData.AmountExcl.ToString("#,##0.00")}", totalfont, //transactionData.AmountExcl 
                               new SolidBrush(Color.Black), 200, Offset);
 
             Offset = Offset + mediuminc;
             graphics.DrawString($"Total Tax: " + transactionData.TaxRatePercent + "%" , totalfont,
                               new SolidBrush(Color.Black), startX, Offset);
-            graphics.DrawString($"{transactionData.TaxAmount}", totalfont,
+            graphics.DrawString($"{transactionData.TaxAmount.ToString("#,##0.00")}", totalfont, // .ToString("#,##0.00") <= isse amount me , coma ayega
                               new SolidBrush(Color.Black), 200, Offset);
 
             Offset = Offset + mediuminc;
@@ -548,7 +568,7 @@ namespace TableMonitor
                 //graphics.DrawString($"{transactionData.paymode}", totalfont, //graphics.DrawString($"{item.Tendertype}", totalfont,
                 //                  new SolidBrush(Color.Black), startX, Offset);
 
-                graphics.DrawString($"{item.Amount}", totalfont,
+                graphics.DrawString($"{Convert.ToDecimal(item.Amount).ToString("#,##0.00")}", totalfont,  // graphics.DrawString($"{item.Amount}", totalfont,
                                   new SolidBrush(Color.Black), 200, Offset);
             }
             //   section end 
@@ -570,7 +590,7 @@ namespace TableMonitor
                 graphics.DrawString($"{transactionData.paymode}", totalfont, //graphics.DrawString($"{item.Tendertype}", totalfont,
                                   new SolidBrush(Color.Black), startX, Offset);
 
-                graphics.DrawString($"{item.Amount}", totalfont,
+                graphics.DrawString($"{ Convert.ToDecimal(item.Amount).ToString("#,##0.00")}", totalfont,
                                   new SolidBrush(Color.Black), 200, Offset);
             }
 
@@ -828,10 +848,10 @@ namespace TableMonitor
                 rect1.Size = new Size(100, ((int)graphics.MeasureString(item.Description, minifont, 100, StringFormat.GenericTypographic).Height));
 
                 graphics.DrawString(item.Description, minifont, new SolidBrush(Color.Black), rect1);
-                graphics.DrawString($"{item.QTY}", minifont, new SolidBrush(Color.Black), startX + 130, startY + Offset);
-                graphics.DrawString($"{item.Unitprice}", minifont, new SolidBrush(Color.Black), startX + 155, startY + Offset);
-                graphics.DrawString($"{item.Taxprice}", minifont, new SolidBrush(Color.Black), startX + 195, startY + Offset);
-                graphics.DrawString($"{item.Totalprice}", minifont, new SolidBrush(Color.Black), startX + 230, startY + Offset);
+                graphics.DrawString($"{item.QTY.ToString("#,##0.00")}", minifont, new SolidBrush(Color.Black), startX + 130, startY + Offset);
+                graphics.DrawString($"{item.Unitprice.ToString("#,##0.00")}", minifont, new SolidBrush(Color.Black), startX + 155, startY + Offset);
+                graphics.DrawString($"{item.Taxprice.ToString("#,##0.00")}", minifont, new SolidBrush(Color.Black), startX + 195, startY + Offset);
+                graphics.DrawString($"{item.Totalprice.ToString("#,##0.00")}", minifont, new SolidBrush(Color.Black), startX + 230, startY + Offset);
 
                 //if (!String.IsNullOrEmpty(item.Comment) || !string.IsNullOrEmpty(item.ItemInfoCode))
                 //{
